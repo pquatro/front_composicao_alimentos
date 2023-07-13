@@ -19,6 +19,29 @@ const getList = async () => {
 
 /*
   --------------------------------------------------------------------------------------
+  Função para inserir items na lista apresentada
+  --------------------------------------------------------------------------------------
+*/
+const insertList = (id,nome, caloria, proteina, lipideo, carboidrato, grupo) => {
+  var item = [id, nome, caloria, proteina,lipideo,carboidrato,grupo]
+  var table = document.getElementById('myTable');
+  var row = table.insertRow();
+  for (var i = 0; i < item.length; i++) {
+    var cel = row.insertCell(i);
+    cel.textContent = item[i];
+  }
+  insertButton(row.insertCell(-1))
+  document.getElementById("newNome").value = "";
+  document.getElementById("newCaloria").value = "";
+  document.getElementById("newProteina").value = "";
+  document.getElementById("newLipideo").value = "";
+  document.getElementById("newCarboidrato").value = "";
+  document.getElementById("newGrupo").value = "";
+  removeElement()
+}
+
+/*
+  --------------------------------------------------------------------------------------
   Função para obter a lista de Grupos existente do servidor via requisição GET
   --------------------------------------------------------------------------------------
 */
@@ -74,61 +97,6 @@ getListGrupo();
 
 /*
   --------------------------------------------------------------------------------------
-  Função para incluir um item na lista do servidor via requisição POST
-  --------------------------------------------------------------------------------------
-*/
-const postItem = async (inputAlimento, inputCaloria, inputProteina, inputLipideo, inputCarboidrato, inputGrupo) => {
-  const formData = new FormData();
-  formData.append('nome', inputAlimento);
-  formData.append('energia', inputCaloria);
-  formData.append('proteina', inputProteina);
-  formData.append('lipideo', inputLipideo);
-  formData.append('carboidrato', inputCarboidrato);
-  formData.append('grupo', inputGrupo);
-
-  let url = 'http://127.0.0.1:5000/alimento';
-  fetch(url, {
-    method: 'post',
-    body: formData
-  })
-    .then((response) => response.json())
-    .catch((error) => {
-      console.error('Error:', error);
-      return error;
-    });
-    return response.json().mesage;
-}
-
-/*
-  --------------------------------------------------------------------------------------
-  Função para atualizar um item na lista do servidor via requisição POST
-  --------------------------------------------------------------------------------------
-*/
-const updateItem = async (inputId, inputAlimento, inputCaloria, inputProteina, inputLipideo, inputCarboidrato, inputGrupo) => {
-  const formData = new FormData();  
-  formData.append('id', inputId);
-  formData.append('nome', inputAlimento);
-  formData.append('energia', inputCaloria);
-  formData.append('proteina', inputProteina);
-  formData.append('lipideo', inputLipideo);
-  formData.append('carboidrato', inputCarboidrato);
-  formData.append('grupo', inputGrupo);
-
-  let url = 'http://127.0.0.1:5000/update_alimento';
-  fetch(url, {
-    method: 'post',
-    body: formData
-  })
-    .then((response) => response.json())
-    .catch((error) => {
-      console.error('Error:', error);
-      return error;
-    });
-    return response.json().mesage;
-}
-
-/*
-  --------------------------------------------------------------------------------------
   Função para deletar um item da lista do servidor via requisição DELETE
   --------------------------------------------------------------------------------------
 */
@@ -143,98 +111,6 @@ const deleteItem = (item) => {
       console.error('Error:', error);
     });
 }
-
-/*
-  --------------------------------------------------------------------------------------------------------
-  Função para adicionar ou atualizar um novo item com nome do alimento, caloria, proteina, lipideo, carboidrato e grupo
-  --------------------------------------------------------------------------------------------------------
-*/
-const newItem = () => {  
-  let inputId = document.getElementById("newid").value;
-  let inputAlimento = document.getElementById("newNome").value;
-  let inputCaloria = document.getElementById("newCaloria").value;
-  let inputProteina = document.getElementById("newProteina").value;
-  let inputLipideo = document.getElementById("newLipideo").value;
-  let inputCarboidrato = document.getElementById("newCarboidrato").value;
-  let inputGrupo = document.getElementById("newGrupo").value;
-  let inputTipo = document.getElementById("newType").value;
-  
-  var msg = '';
-  if (inputAlimento === '') {
-    msg += "Escreva o nome do alimento!\n";    
-  } 
-  if (inputCaloria === '') {
-    msg += "Escreva o valor da caloria!\n";    
-  }else{
-    if (isNaN(inputCaloria)) {
-      msg += "Caloria precisa ser número!\n";
-    }
-  }
-  if (inputProteina === '') {
-    msg += "Escreva o valor da Proteína!\n";    
-  }else{
-    if (isNaN(inputProteina)) {
-      msg += "Proteína precisa ser número!\n";
-    }
-  }
-  if (inputLipideo === '') {
-    msg += "Escreva o valor do Lipideo!\n";    
-  }else{
-    if (isNaN(inputLipideo)) {
-      msg += "Lipideo precisa ser número!\n";
-    }
-  }
-  if (inputCarboidrato === '') {
-    msg += "Escreva o valor do Carboidrato!\n";    
-  }else{
-    if (isNaN(inputCarboidrato)) {
-      msg += "Carboidrato precisa ser número!\n";
-    }
-  }
-  if (inputGrupo==='') {
-    msg += "Selecione um grupo!\n";
-  }
-
-  if(msg!=''){
-    alert(msg);    
-  }
-  else
-  { 
-    if(inputTipo=='cadastrar'){
-      postItem(inputAlimento, inputCaloria, inputProteina, inputLipideo, inputCarboidrato, inputGrupo);
-      alert("Item adicionado!")
-      location.reload();
-    }else{ //atualizar
-      updateItem(inputId,inputAlimento, inputCaloria, inputProteina, inputLipideo, inputCarboidrato, inputGrupo);
-      alert("Item atualizado!")
-      location.reload();
-    }
-  }
-}
-
-/*
-  --------------------------------------------------------------------------------------
-  Função para inserir items na lista apresentada
-  --------------------------------------------------------------------------------------
-*/
-const insertList = (id,nome, caloria, proteina, lipideo, carboidrato, grupo) => {
-  var item = [id, nome, caloria, proteina,lipideo,carboidrato,grupo]
-  var table = document.getElementById('myTable');
-  var row = table.insertRow();
-  for (var i = 0; i < item.length; i++) {
-    var cel = row.insertCell(i);
-    cel.textContent = item[i];
-  }
-  insertButton(row.insertCell(-1))
-  document.getElementById("newNome").value = "";
-  document.getElementById("newCaloria").value = "";
-  document.getElementById("newProteina").value = "";
-  document.getElementById("newLipideo").value = "";
-  document.getElementById("newCarboidrato").value = "";
-  document.getElementById("newGrupo").value = "";
-  removeElement()
-}
-
 
 /*
   --------------------------------------------------------------------------------------
@@ -278,7 +154,148 @@ jQuery(document).ready(function() {
   --------------------------------------------------------------------------------------
   */
   $('#butSubmit').click(function() {         
-    newItem();      
+    
+
+    let inputId = document.getElementById("newid").value;
+    let inputAlimento = document.getElementById("newNome").value;
+    let inputCaloria = document.getElementById("newCaloria").value;
+    let inputProteina = document.getElementById("newProteina").value;
+    let inputLipideo = document.getElementById("newLipideo").value;
+    let inputCarboidrato = document.getElementById("newCarboidrato").value;
+    let inputGrupo = document.getElementById("newGrupo").value;
+    let inputTipo = document.getElementById("newType").value;
+    
+    var msg = '';
+    if (inputAlimento === '') {
+      msg += "Escreva o nome do alimento!\n";    
+    } 
+    if (inputCaloria === '') {
+      msg += "Escreva o valor da caloria!\n";    
+    }else{
+      if (isNaN(inputCaloria)) {
+        msg += "Caloria precisa ser número!\n";
+      }
+    }
+    if (inputProteina === '') {
+      msg += "Escreva o valor da Proteína!\n";    
+    }else{
+      if (isNaN(inputProteina)) {
+        msg += "Proteína precisa ser número!\n";
+      }
+    }
+    if (inputLipideo === '') {
+      msg += "Escreva o valor do Lipideo!\n";    
+    }else{
+      if (isNaN(inputLipideo)) {
+        msg += "Lipideo precisa ser número!\n";
+      }
+    }
+    if (inputCarboidrato === '') {
+      msg += "Escreva o valor do Carboidrato!\n";    
+    }else{
+      if (isNaN(inputCarboidrato)) {
+        msg += "Carboidrato precisa ser número!\n";
+      }
+    }
+    if (inputGrupo==='') {
+      msg += "Selecione um grupo!\n";
+    }
+  
+    if(msg!=''){
+      alert(msg);    
+    }
+    else
+    { 
+      if(inputTipo=='cadastrar'){
+                
+        /*
+          --------------------------------------------------------------------------------------
+          Função para incluir um item na lista do servidor via requisição POST
+          --------------------------------------------------------------------------------------
+        */
+        var postForm = { //Fetch form data
+          'nome'         : inputAlimento,
+          'energia'      : inputCaloria,
+          'proteina'     : inputProteina,
+          'lipideo'      : inputLipideo,
+          'carboidrato'  : inputCarboidrato,
+          'grupo_id'     : inputGrupo
+        };
+        
+
+        $.ajax({
+          type: "post",
+          url: 'http://127.0.0.1:5000/alimento',    
+          data: postForm,  
+          success: function(result){
+            alert("Item adicionado!")
+            location.reload();
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            var status = jqXHR.status;
+            //var msg = jqXHR.responseText;
+             console.log(textStatus, errorThrown);             
+              switch (status) {
+                case 400: //Bad Request
+                  alert("Bad Request");                  
+                case 409: //conflict                  
+                  alert("Alimento de mesmo nome já salvo na base");                  
+                case 422: //Unprocessable Entity
+                  //alert("Unprocessable Entity");                  
+                default: //Unknown server error occured
+                  throw new Error(`Unknown server error occured:`+ textStatus);
+              }
+          }
+        });
+      
+       
+      }else{ //atualizar
+
+        /*
+          --------------------------------------------------------------------------------------
+          Função para atualizar um item na lista do servidor via requisição POST
+          --------------------------------------------------------------------------------------
+        */
+        var postForm = { //Fetch form data
+          'id'           : inputId,
+          'nome'         : inputAlimento,
+          'energia'      : inputCaloria,
+          'proteina'     : inputProteina,
+          'lipideo'      : inputLipideo,
+          'carboidrato'  : inputCarboidrato,
+          'grupo_id'     : inputGrupo
+        };
+        
+
+        $.ajax({
+          type: "post",
+          url: 'http://127.0.0.1:5000/update_alimento',    
+          data: postForm,  
+          success: function(result){
+            alert("Item Atualizado!")
+            $("#newType").val("cadastrar");   
+            $("#newid").val("");   
+            location.reload();
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            var status = jqXHR.status;
+            //var msg = jqXHR.responseText;
+            console.log(textStatus, errorThrown);             
+              switch (status) {
+                case 400: //Bad Request
+                  alert("Bad Request");                  
+                case 409: //conflict                  
+                  alert("Alimento de mesmo nome já salvo na base");                  
+                case 422: //Unprocessable Entity
+                  alert("Unprocessable Entity");                  
+                default: //Unknown server error occured
+                  throw new Error(`Unknown server error occured:`+ textStatus);
+              }
+          }
+        });
+      }
+    }
+
   });
 
   /*
